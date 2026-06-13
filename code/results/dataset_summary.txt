@@ -1,0 +1,39 @@
+============================================================
+DATASET SUMMARY (Text-Based)
+============================================================
+
+Total Samples: 30
+Controllers: ryu, floodlight, onos
+Topologies: star, tree, linear, mesh, ring
+
+--- Performance by Controller ---
+
+RYU:
+  Avg Throughput: 189.87 Mbps
+  Avg Latency: 43.94 ms
+  Avg CPU: 19.81%
+  Avg AHP Score: 0.7561
+
+FLOODLIGHT:
+  Avg Throughput: 201.46 Mbps
+  Avg Latency: 39.94 ms
+  Avg CPU: 27.86%
+  Avg AHP Score: 0.7662
+
+ONOS:
+  Avg Throughput: 205.47 Mbps
+  Avg Latency: 43.00 ms
+  Avg CPU: 58.65%
+  Avg AHP Score: 0.7200
+
+--- Best Controller by Topology ---
+  STAR: RYU (0.8698)
+  TREE: FLOODLIGHT (0.8296)
+  LINEAR: RYU (0.7385)
+  MESH: ONOS (0.8256)
+  RING: FLOODLIGHT (0.6994)
+
+--- Privileged vs Disadvantaged ---
+  Privileged (Star/Tree/Linear): 0.7684
+  Disadvantaged (Mesh/Ring): 0.7160
+  Gap: 0.0525

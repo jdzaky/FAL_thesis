@@ -1,0 +1,2 @@
+sample_id,iteration,timestamp,controller_name,scenario_name,nodes,topology_type,bandwidth_demand,throughput_mbps,latency_ms,packet_loss_percent,score_reliability,jitter_ms,cpu_usage_percent,memory_usage_mb,flow_setup_time_ms,score_compliance,score_efficiency,score_stability,ahp_score,best_controller_label,score_gap,resource_method,connectivity_status
+1,1,2026-05-06T10:47:45.343442,ryu,Mesh_4nodes_10M,4,mesh,10M,31848.68,0.1,0.0,1.0,0.008,0.23,35.21,49.81,1.0,0.8807,0.9584,0.9735,,0,hybrid_p95,CONTROLLER

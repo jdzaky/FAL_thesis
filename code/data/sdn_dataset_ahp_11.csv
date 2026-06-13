@@ -1,0 +1,7 @@
+sample_id,iteration,timestamp,controller_name,scenario_name,nodes,topology_type,bandwidth_demand,throughput_mbps,latency_ms,packet_loss_percent,score_reliability,jitter_ms,cpu_usage_percent,memory_usage_mb,flow_setup_time_ms,score_compliance,score_efficiency,score_stability,ahp_score,best_controller_label,score_gap,resource_method,connectivity_status
+1,1,2026-05-05T10:58:16.715375,ryu,Star_4nodes_10M,4,star,10M,20070.7,0.115,0.0,1.0,0.07,0.16,45.47,32.5,1.0,0.873,0.9719,0.9732,ryu,0.0592,hybrid_p95,CONTROLLER
+2,1,2026-05-05T10:59:42.017356,floodlight,Star_4nodes_10M,4,star,10M,19731.53,0.092,0.0,1.0,0.084,32.49,322.7,32.5,1.0,0.5667,0.9717,0.914,ryu,0.0592,hybrid_p95,CONTROLLER
+3,1,2026-05-05T11:02:11.667461,onos,Star_4nodes_10M,4,star,10M,19834.43,4.125,0.0,1.0,15.025,18.47,685.81,32.5,1.0,0.6473,0.7475,0.911,ryu,0.0592,hybrid_p95,CONTROLLER
+4,1,2026-05-05T11:03:35.518954,ryu,Tree_D2_F2_50M,2,tree,50M,18016.81,0.122,0.0,1.0,0.157,0.91,33.59,27.5,1.0,0.8771,0.9747,0.9742,ryu,0.0739,hybrid_p95,CONTROLLER
+5,1,2026-05-05T11:05:01.634957,floodlight,Tree_D2_F2_50M,2,tree,50M,17647.42,0.106,0.0,1.0,0.113,51.52,367.2,27.5,1.0,0.4195,0.9754,0.8859,ryu,0.0739,hybrid_p95,CONTROLLER
+6,1,2026-05-05T11:07:32.146911,onos,Tree_D2_F2_50M,2,tree,50M,17883.08,4.864,0.0,1.0,17.593,23.37,770.78,27.5,1.0,0.6067,0.7132,0.9003,ryu,0.0739,hybrid_p95,CONTROLLER

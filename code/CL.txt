@@ -1,0 +1,305 @@
+import numpy as np
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader, TensorDataset
+
+# ============================================================
+# 1. INFLUENCE FUNCTION ψ(x) — Eq. (4)
+# ============================================================
+def psi(x):
+    return np.log(1 + x + (x ** 2) / 2)
+
+# ============================================================
+# 2. COMPUTE THRESHOLD µ_j — Eq. (5)
+# ============================================================
+def compute_threshold(probs, labels, n_classes, Ns, nu):
+    """
+    Hitung µ_j per kelas menggunakan lower bound confidence interval.
+    - probs  : (N, k) predicted probabilities
+    - labels : (N,)  observed labels
+    - Ns     : estimasi jumlah instance bersih
+    - nu     : variance parameter
+    """
+    thresholds = {}
+    for j in range(n_classes):
+        idx = np.where(labels == j)[0]
+        if len(idx) == 0:
+            thresholds[j] = 0.0
+            continue
+
+        p_j   = probs[idx, j]       # confidence score untuk kelas j
+        t_bar = np.mean(psi(p_j))   # truncated mean (t̄_j)
+
+        # Q = ν(N + ν·log(2N) / N²)
+        Q    = nu * (Ns + (nu * np.log(2 * Ns)) / (Ns ** 2))
+        mu_j = t_bar - Q / (Ns - nu)   # µ_j = t̄_j - Q/(Ns - ν)
+
+        thresholds[j] = mu_j
+    return thresholds
+
+# ============================================================
+# 3. TENTUKAN TRUE LABEL z_n — Line 7-11 Algorithm 1
+#    Kondisional: cek θA dulu, fallback ke θB
+# ============================================================
+def assign_true_labels(probs_A, probs_B, labels, thresh_A, thresh_B, n_classes):
+    """
+    Untuk setiap instance n:
+      - Jika p̂(yn=j; xn, θA) >= µ_j^A  → z_n = argmax_{j} p̂(θA)
+      - Else if p̂(yn=j; xn, θB) >= µ_j^B → z_n = argmax_{j} p̂(θB)
+      - Else → z_n = None (tidak bisa ditentukan)
+    """
+    N = len(labels)
+    z_hat  = np.full(N, -1, dtype=int)   # -1 = undetermined
+    source = np.full(N, '', dtype=object)
+
+    for n in range(N):
+        y_n  = labels[n]
+        p_A  = probs_A[n, y_n]   # confidence terhadap observed label
+        p_B  = probs_B[n, y_n]
+
+        # Line 7-8: cek θA
+        if p_A >= thresh_A.get(y_n, 0):
+            z_hat[n]  = int(np.argmax(probs_A[n]))
+            source[n] = 'A'
+        # Line 9-10: fallback ke θB
+        elif p_B >= thresh_B.get(y_n, 0):
+            z_hat[n]  = int(np.argmax(probs_B[n]))
+            source[n] = 'B'
+        # Line 11: tidak masuk kondisi → undetermined
+        else:
+            source[n] = 'none'
+
+    return z_hat, source
+
+# ============================================================
+# 4. HITUNG CONFIDENT JOINT C_bar — Eq. (1)
+#    Dan ambil index off-diagonal (instance biased)
+# ============================================================
+def compute_confident_joint(labels, z_hat, n_classes):
+    """
+    Bangun count matrix C[y, z], lalu normalisasi menjadi C_bar.
+    Hanya instance dengan z_hat != -1 yang dihitung.
+    """
+    C = np.zeros((n_classes, n_classes), dtype=float)
+    for n in range(len(labels)):
+        if z_hat[n] == -1:
+            continue
+        y = labels[n]
+        z = z_hat[n]
+        C[y, z] += 1
+
+    # Normalisasi per baris → C_bar (Eq. 1)
+    C_bar = np.zeros_like(C)
+    for j in range(n_classes):
+        row_sum = C[j].sum()
+        n_j     = np.sum(labels == j)
+        if row_sum > 0:
+            C_bar[j] = (C[j] / row_sum) * n_j
+
+    return C_bar
+
+def get_off_diagonal_indices(labels, z_hat):
+    """
+    Line 13: D̃_A, D̃_B = instance di off-diagonal confident joint
+    yaitu instance dengan observed label y ≠ predicted true label z.
+    """
+    biased_idx = []
+    for n in range(len(labels)):
+        if z_hat[n] != -1 and labels[n] != z_hat[n]:
+            biased_idx.append(n)
+    return set(biased_idx)
+
+# ============================================================
+# 5. MODEL & HELPER
+# ============================================================
+class SimpleNet(nn.Module):
+    def __init__(self, input_dim, n_classes):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(input_dim, 64), nn.ReLU(),
+            nn.Linear(64, 32),        nn.ReLU(),
+            nn.Linear(32, n_classes)
+        )
+    def forward(self, x):
+        return self.net(x)
+
+def get_probs(model, X, device='cpu'):
+    model.eval()
+    with torch.no_grad():
+        X_t    = torch.tensor(X, dtype=torch.float32).to(device)
+        logits = model(X_t)
+        return torch.softmax(logits, dim=1).cpu().numpy()
+
+def gradient_step(model, X, y, optimizer, criterion, device='cpu'):
+    """Satu langkah gradient descent."""
+    model.train()
+    X_t = torch.tensor(X, dtype=torch.float32).to(device)
+    y_t = torch.tensor(y, dtype=torch.long).to(device)
+    optimizer.zero_grad()
+    loss = criterion(model(X_t), y_t)
+    loss.backward()
+    optimizer.step()
+    return loss.item()
+
+# ============================================================
+# 6. MAIN ALGORITHM — Algorithm 1 (sesuai paper)
+# ============================================================
+def fair_confident_learning(
+    X, y, s,
+    n_classes  = 2,
+    epochs     = 50,       # T
+    batch_size = 256,
+    Ns         = 0.6,      # fraksi → dikonversi ke count
+    nu         = 1e-2,     # ν
+    lr         = 1e-3,     # η
+    device     = 'cpu'
+):
+    """
+    Implementasi Algorithm 1 dari paper:
+    'Mitigating Label Bias in Machine Learning: Fairness through Confident Learning'
+
+    Parameter:
+      X          : np.array (N, d) — fitur
+      y          : np.array (N,)   — observed (biased) labels
+      s          : np.array (N,)   — sensitive attribute (0=A, 1=B)
+      n_classes  : jumlah kelas k
+      epochs     : jumlah epoch T
+      batch_size : ukuran mini-batch
+      Ns         : fraksi instance bersih (hyperparameter)
+      nu         : variance untuk M-estimator (hyperparameter)
+      lr         : learning rate η
+    """
+    N         = len(y)
+    input_dim = X.shape[1]
+    Ns_count  = max(int(Ns * N), 2)
+
+    # --- Inisialisasi θA, θB, θ (Line 1) ---
+    model_A = SimpleNet(input_dim, n_classes).to(device)
+    model_B = SimpleNet(input_dim, n_classes).to(device)
+    model_f = SimpleNet(input_dim, n_classes).to(device)
+
+    # PENTING: Line 4 → θA diupdate menggunakan loss dari θB (cross-evaluate)
+    opt_A = torch.optim.Adam(model_A.parameters(), lr=lr)
+    opt_B = torch.optim.Adam(model_B.parameters(), lr=lr)
+    opt_f = torch.optim.Adam(model_f.parameters(), lr=lr)
+    criterion = nn.CrossEntropyLoss()
+
+    idx_A = np.where(s == 0)[0]
+    idx_B = np.where(s == 1)[0]
+
+    # Buat DataLoader untuk mini-batch (Line 3)
+    dataset    = TensorDataset(
+        torch.tensor(X, dtype=torch.float32),
+        torch.tensor(y, dtype=torch.long),
+        torch.tensor(s, dtype=torch.long),
+        torch.tensor(np.arange(N), dtype=torch.long)   # simpan original index
+    )
+    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+    # --- for t = 0, ..., T (Line 2) ---
+    for epoch in range(epochs):
+        epoch_biased = 0
+        epoch_clean  = 0
+
+        for batch in loader:
+            X_bt, y_bt, s_bt, orig_idx = batch
+            X_b = X_bt.numpy()
+            y_b = y_bt.numpy()
+            s_b = s_bt.numpy()
+
+            # --- Line 3: Split mini-batch Dt → Dt_A dan Dt_B ---
+            mask_A = s_b == 0
+            mask_B = s_b == 1
+
+            X_bA, y_bA = X_b[mask_A], y_b[mask_A]
+            X_bB, y_bB = X_b[mask_B], y_b[mask_B]
+
+            # --- Line 4: θA ← θA - η∇ℓ(Dt_A; θB) ---
+            # θA diupdate dengan loss yang dievaluasi menggunakan PARAMETER θB
+            if len(X_bA) > 0:
+                model_A.train()
+                X_t = torch.tensor(X_bA, dtype=torch.float32).to(device)
+                y_t = torch.tensor(y_bA, dtype=torch.long).to(device)
+                opt_A.zero_grad()
+                # Gunakan model_B untuk forward, update model_A
+                logits = model_B(X_t)   # ← evaluasi dengan θB
+                loss   = criterion(logits, y_t)
+                loss.backward()
+                # Manual update parameter θA menggunakan gradient dari θB
+                with torch.no_grad():
+                    for pA, pB in zip(model_A.parameters(), model_B.parameters()):
+                        if pB.grad is not None:
+                            pA.data -= lr * pB.grad
+
+            # --- Line 5: θB ← θB - η∇ℓ(Dt_B; θB) ---
+            if len(X_bB) > 0:
+                gradient_step(model_B, X_bB, y_bB, opt_B, criterion, device)
+
+            # --- Line 6: Hitung µ_j^A dan µ_j^B menggunakan Eq.(5) ---
+            probs_A = get_probs(model_A, X_b, device)
+            probs_B = get_probs(model_B, X_b, device)
+
+            thresh_A = compute_threshold(probs_A, y_b, n_classes, Ns_count, nu)
+            thresh_B = compute_threshold(probs_B, y_b, n_classes, Ns_count, nu)
+
+            # --- Line 7-11: Tentukan true label z_n (if-else kondisional) ---
+            z_hat, _ = assign_true_labels(
+                probs_A, probs_B, y_b, thresh_A, thresh_B, n_classes
+            )
+
+            # --- Line 12: Hitung confident joint C_bar_A dan C_bar_B ---
+            C_bar = compute_confident_joint(y_b, z_hat, n_classes)
+
+            # --- Line 13: Ambil D̃_A ∪ D̃_B = off-diagonal confident joint ---
+            biased_local = get_off_diagonal_indices(y_b, z_hat)
+
+            # --- Line 14: Dt_S = Dt \ (D̃_A ∪ D̃_B) ---
+            clean_local = [i for i in range(len(y_b)) if i not in biased_local]
+
+            epoch_biased += len(biased_local)
+            epoch_clean  += len(clean_local)
+
+            # --- Line 15: θ ← θ - η∇ℓ(Dt_S; θ) ---
+            if len(clean_local) > 0:
+                X_clean = X_b[clean_local]
+                y_clean = y_b[clean_local]
+                gradient_step(model_f, X_clean, y_clean, opt_f, criterion, device)
+
+        if (epoch + 1) % 10 == 0:
+            print(f"Epoch {epoch+1:3d}/{epochs} | "
+                  f"Biased filtered: {epoch_biased:4d} | "
+                  f"Clean trained: {epoch_clean:4d}")
+
+    return model_f   # Line 16: return model θ final
+
+# ============================================================
+# 7. CONTOH PENGGUNAAN
+# ============================================================
+if __name__ == "__main__":
+    np.random.seed(42)
+    N, d = 2000, 10
+
+    X = np.random.randn(N, d)
+    y = (X[:, 0] > 0).astype(int)
+    s = np.random.randint(0, 2, size=N)
+
+    # Simulasi label bias: flip label grup B (disadvantaged) dengan prob 0.3
+    y_biased   = y.copy()
+    flip_idx   = np.where((s == 1) & (y == 1))[0]
+    flip_mask  = np.random.rand(len(flip_idx)) < 0.3
+    y_biased[flip_idx[flip_mask]] = 0
+
+    print("=== Fairness through Confident Learning ===")
+    print(f"Total data: {N} | Grup A: {(s==0).sum()} | Grup B: {(s==1).sum()}")
+    print(f"Label bias (flipped): {flip_mask.sum()} instance\n")
+
+    model = fair_confident_learning(
+        X, y_biased, s,
+        n_classes  = 2,
+        epochs     = 50,
+        batch_size = 256,
+        Ns         = 0.6,
+        nu         = 1e-2,
+        lr         = 1e-3
+    )
+    print("\nTraining selesai. Model siap digunakan.")

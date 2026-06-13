@@ -1,0 +1,43 @@
+aky@dzaky-GACOR:/media/dzaky/Data/TESISASLI/code$ sdn-env/bin/python3 cleaning.py 
+2026-05-06 11:40:18,702 - INFO - ============================================================
+2026-05-06 11:40:18,702 - INFO - FAIRNESS PIPELINE: CL + iFlipper
+2026-05-06 11:40:18,702 - INFO - Based on CL.txt and iFlipper_Demo.ipynb
+2026-05-06 11:40:18,702 - INFO - ============================================================
+2026-05-06 11:40:18,705 - INFO - Loaded 15 samples from sdn_dataset_ahp.csv
+2026-05-06 11:40:18,705 - INFO - Original dataset: 15 samples
+2026-05-06 11:40:18,705 - INFO - 
+--- Fairness Metrics ---
+2026-05-06 11:40:18,710 - INFO - Privileged mean: 0.9356
+2026-05-06 11:40:18,710 - INFO - Disadvantaged mean: 0.9291
+2026-05-06 11:40:18,710 - INFO - Score gap: 0.0064
+2026-05-06 11:40:18,710 - INFO - SPD: 0.0064
+2026-05-06 11:40:18,710 - INFO - 
+============================================================
+2026-05-06 11:40:18,710 - INFO - Stage 1: CONFIDENT LEARNING
+2026-05-06 11:40:18,710 - INFO - ============================================================
+2026-05-06 11:40:18,710 - INFO - ============================================================
+2026-05-06 11:40:18,710 - INFO - FAIR CONFIDENT LEARNING (CL.txt Algorithm 1)
+2026-05-06 11:40:18,710 - INFO - ============================================================
+2026-05-06 11:40:18,713 - INFO - Total samples: 15
+2026-05-06 11:40:18,713 - INFO - Privileged (A): 9 | Disadvantaged (B): 6
+2026-05-06 11:40:18,713 - INFO - Estimated clean: 9
+2026-05-06 11:40:18,714 - ERROR - Error: This solver needs samples of at least 2 classes in the data, but the data contains only one class: np.int64(0)
+2026-05-06 11:40:18,716 - ERROR - Traceback (most recent call last):
+  File "/media/dzaky/Data/TESISASLI/code/cleaning.py", line 515, in <module>
+    main()
+  File "/media/dzaky/Data/TESISASLI/code/cleaning.py", line 461, in main
+    df_cl = apply_confident_learning_filter(df)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/dzaky/Data/TESISASLI/code/cleaning.py", line 408, in apply_confident_learning_filter
+    df_cl = fair_confident_learning(df, epochs=30, Ns_fraction=0.6, nu=1e-2)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/dzaky/Data/TESISASLI/code/cleaning.py", line 198, in fair_confident_learning
+    clf_A.fit(X_A, y_A)
+  File "/media/dzaky/Data/TESISASLI/code/sdn-env/lib/python3.12/site-packages/sklearn/base.py", line 1365, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/media/dzaky/Data/TESISASLI/code/sdn-env/lib/python3.12/site-packages/sklearn/linear_model/_logistic.py", line 1335, in fit
+    raise ValueError(
+ValueError: This solver needs samples of at least 2 classes in the data, but the data contains only one class: np.int64(0)
+
+

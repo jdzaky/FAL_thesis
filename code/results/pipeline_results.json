@@ -1,0 +1,30 @@
+{
+  "original_samples": 30,
+  "clean_samples": 21,
+  "fair_samples": 21,
+  "noise_removed": 9,
+  "metrics_before": {
+    "privileged_mean_score": 0.7684277777777778,
+    "disadvantaged_mean_score": 0.7159749999999999,
+    "score_gap": 0.052452777777777904,
+    "privileged_best_controller": "onos",
+    "disadvantaged_best_controller": "onos",
+    "statistical_parity_difference": 0.07691666666666663
+  },
+  "metrics_after_cl": {
+    "privileged_mean_score": 0.8076222222222224,
+    "disadvantaged_mean_score": 0.7159749999999999,
+    "score_gap": 0.09164722222222244,
+    "privileged_best_controller": "onos",
+    "disadvantaged_best_controller": "onos",
+    "statistical_parity_difference": 0.07691666666666663
+  },
+  "metrics_after_iflipper": {
+    "privileged_mean_score": 0.8076222222222224,
+    "disadvantaged_mean_score": 0.7159749999999999,
+    "score_gap": 0.09164722222222244,
+    "privileged_best_controller": "onos",
+    "disadvantaged_best_controller": "onos",
+    "statistical_parity_difference": 0.07038857142857136
+  }
+}

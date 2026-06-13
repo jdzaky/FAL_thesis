@@ -1,0 +1,30 @@
+[
+  {
+    "dataset": "Dataset A",
+    "n_samples": 30,
+    "n_features": 8,
+    "rf_accuracy_mean": 0.2,
+    "rf_accuracy_std": 0.0667,
+    "dt_accuracy_mean": 0.2,
+    "dt_accuracy_std": 0.1247,
+    "statistical_parity": 0.0,
+    "equal_opportunity": 0,
+    "privileged_accuracy": 1.0,
+    "disadvantaged_accuracy": 1.0,
+    "accuracy_gap": 0.0
+  },
+  {
+    "dataset": "Dataset B",
+    "n_samples": 21,
+    "n_features": 8,
+    "rf_accuracy_mean": 0.77,
+    "rf_accuracy_std": 0.204,
+    "dt_accuracy_mean": 0.76,
+    "dt_accuracy_std": 0.1594,
+    "statistical_parity": 0.0,
+    "equal_opportunity": 0,
+    "privileged_accuracy": 1.0,
+    "disadvantaged_accuracy": 1.0,
+    "accuracy_gap": 0.0
+  }
+]

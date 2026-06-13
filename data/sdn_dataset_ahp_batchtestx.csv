@@ -1,0 +1,2 @@
+sample_id,iteration,timestamp,controller_name,scenario_name,nodes,topology_type,bandwidth_demand,throughput_mbps,latency_ms,packet_loss_percent,score_reliability,jitter_ms,cpu_usage_percent,memory_usage_mb,flow_setup_time_ms,score_compliance,score_efficiency,score_stability,ahp_score,best_controller_label,score_gap,resource_method,connectivity_status
+1,1,2026-05-13T14:32:41.770814,ryu,tree,4,tree,60M,0.0,0.076,0.0,1.0,0.015,1.75,34.18,12.16,0.91,0.8702,0.9896,0.9089,,0,hybrid_p95,CONTROLLER

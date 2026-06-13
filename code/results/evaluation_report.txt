@@ -1,0 +1,19 @@
+============================================================
+THESIS EVALUATION SUMMARY REPORT
+============================================================
+
+--- Dataset A ---
+  Samples: 30
+  Features: 8
+  Random Forest Accuracy: 0.2000 ± 0.0667
+  Decision Tree Accuracy: 0.2000 ± 0.1247
+  Statistical Parity Diff: 0.0000
+  Accuracy Gap: 0.0000
+
+--- Dataset B ---
+  Samples: 21
+  Features: 8
+  Random Forest Accuracy: 0.7700 ± 0.2040
+  Decision Tree Accuracy: 0.7600 ± 0.1594
+  Statistical Parity Diff: 0.0000
+  Accuracy Gap: 0.0000
