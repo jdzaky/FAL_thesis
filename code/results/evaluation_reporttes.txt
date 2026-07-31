@@ -1,0 +1,51 @@
+============================================================
+THESIS EVALUATION SUMMARY REPORT
+============================================================
+
+--- Dataset A ---
+  Samples: 1050 (train=840, test=210)
+  Features: 8
+  [Random Forest] Accuracy: 0.5857 | Precision: 0.5908 | Recall: 0.5857 | F1: 0.5836
+  [Decision Tree - baseline tambahan] Accuracy: 0.5143 | Precision: 0.5174 | Recall: 0.5143 | F1: 0.5145
+  [Pelengkap] SPD: 0.7382 worst-class=onos (fair=False) | DI: 5.0759 worst-class=onos (fair=False, eps=0.001)
+  [Kriteria utama] EOD: 0.6034 worst-class=floodlight (fair=False) | IF: 0.0757 (fair=False)
+  Fairness metrics achieved (4 metrik/Tabel 3.6): 0/4
+  Primary fair (EOD+IF): 0/2 -> False
+  Rincian per kelas (one-vs-rest):
+    - floodlight: SPD=0.3771 DI=0.0537 EOD=0.6034
+    - onos: SPD=0.7382 DI=5.0759 EOD=0.5338
+    - ryu: SPD=0.3611 DI=0.1470 EOD=0.3991
+
+--- Dataset B (ground truth) ---
+  Samples: 833 (train=666, test=167)
+  Features: 8
+  [Random Forest] Accuracy: 0.8922 | Precision: 0.9017 | Recall: 0.8922 | F1: 0.8910
+  [Decision Tree - baseline tambahan] Accuracy: 0.8204 | Precision: 0.8214 | Recall: 0.8204 | F1: 0.8180
+  [Pelengkap] SPD: 0.6984 worst-class=onos (fair=False) | DI: 27.8617 worst-class=onos (fair=False, eps=0.001)
+  [Kriteria utama] EOD: 0.4143 worst-class=onos (fair=False) | IF: 0.4033 (fair=False)
+  Fairness metrics achieved (4 metrik/Tabel 3.6): 0/4
+  Primary fair (EOD+IF): 0/2 -> False
+  Rincian per kelas (one-vs-rest):
+    - floodlight: SPD=0.2324 DI=0.1578 EOD=0.3000
+    - onos: SPD=0.6984 DI=27.8617 EOD=0.4143
+    - ryu: SPD=0.4660 DI=0.3353 EOD=0.1115
+
+penelitian saya = draft_tesis.docx dataset awal ahp = final_sdn_dataset.csv data setelah confident learning = dataset_clean setelah iflipper = ground_truth
+bantu saya untuk membuat draft penjelasan hasil di bab 4 dengan outline berikut ini 
+
+Perbandingan Akurasi Model: Dataset Awal vs Ground truth
+
+* Akurasi, Precision, Recall, F1-Score untuk kedua dataset
+* Hasil uji statistik perbedaan akurasi
+* Peningkatan atau penurunan performa model
+
+
+buat gambar atau plot yang mendukung penjelasan dengan python berdasarkan data csv, atau buat tabel juga
+buat draft penjelasan berupa paragraf, kalimatnya tanpa em dash, menggunakan kalimat dan kata efektif, tidak bertele - tele penjelasannya, mention gambar atau tabel yang dibuat untuk mendukung penjelasan pada draft penjelasan (pada gambar/tabel 4.x ....). tulis output hanya bagian outline yang diminta saja
+jangan buat draft dulu jika masih ada pertanyaan
+
+
+REVISI kurangi penjelasan tentang decision tree, hanya gunakan random forest seperti pada penjelasi evaluasi, dan untuk uji z test saya kira tidak disertakan di penjelasan evaluasi bab 3, jika saya tetap ingin mempertahankan itu bagian draft mana saja yang perlu saya ubah
+
+
+

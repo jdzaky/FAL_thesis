@@ -1,0 +1,31 @@
+============================================================
+THESIS EVALUATION SUMMARY REPORT
+============================================================
+
+--- Dataset A ---
+  Samples: 1050 (train=840, test=210)
+  Features: 8
+  [Random Forest] Accuracy: 0.5857 | Precision: 0.5908 | Recall: 0.5857 | F1: 0.5836
+  [Decision Tree - baseline tambahan] Accuracy: 0.5143 | Precision: 0.5174 | Recall: 0.5143 | F1: 0.5145
+  [Pelengkap] SPD: 0.7382 worst-class=onos (fair=False) | DI: 5.0985 worst-class=onos (fair=False, eps=0)
+  [Kriteria utama] EOD: 0.6034 worst-class=floodlight (fair=False) | IF: 0.0757 (fair=False)
+  Fairness metrics achieved (4 metrik/Tabel 3.6): 0/4
+  Primary fair (EOD+IF): 0/2 -> False
+  Rincian per kelas (one-vs-rest):
+    - floodlight: SPD=0.3771 DI=0.0513 EOD=0.6034
+    - onos: SPD=0.7382 DI=5.0985 EOD=0.5338
+    - ryu: SPD=0.3611 DI=0.1450 EOD=0.3991
+
+--- Dataset B ---
+  Samples: 833 (train=666, test=167)
+  Features: 8
+  [Random Forest] Accuracy: 0.8922 | Precision: 0.9017 | Recall: 0.8922 | F1: 0.8910
+  [Decision Tree - baseline tambahan] Accuracy: 0.8204 | Precision: 0.8214 | Recall: 0.8204 | F1: 0.8180
+  [Pelengkap] SPD: 0.6984 worst-class=onos (fair=False) | DI: 28.9362 worst-class=onos (fair=False, eps=0)
+  [Kriteria utama] EOD: 0.4143 worst-class=onos (fair=False) | IF: 0.4033 (fair=False)
+  Fairness metrics achieved (4 metrik/Tabel 3.6): 0/4
+  Primary fair (EOD+IF): 0/2 -> False
+  Rincian per kelas (one-vs-rest):
+    - floodlight: SPD=0.2324 DI=0.1547 EOD=0.3000
+    - onos: SPD=0.6984 DI=28.9362 EOD=0.4143
+    - ryu: SPD=0.4660 DI=0.3343 EOD=0.1115

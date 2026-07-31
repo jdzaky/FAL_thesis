@@ -17,8 +17,9 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')
 OUTPUT_DIR = os.path.join(BASE_DIR, 'results')
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-DATASET_A = os.path.join(DATA_DIR, 'sdn_dataset_ahp.csv')
-DATASET_B = os.path.join(DATA_DIR, 'sdn_dataset_fair.csv')
+DATASET_A = os.path.join(DATA_DIR, 'final_sdn_dataset_ahp.csv')
+DATASET_A_CLEAN = os.path.join(DATA_DIR, 'DATASET_CLEAN.csv')
+DATASET_B = os.path.join(DATA_DIR, 'GROUND_TRUTH.csv')
 
 logging.basicConfig(
     level=logging.INFO,

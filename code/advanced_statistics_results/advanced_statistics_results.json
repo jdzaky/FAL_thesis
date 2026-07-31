@@ -1,0 +1,357 @@
+{
+  "descriptive_statistics": {
+    "throughput_mbps": {
+      "mean": 35908.171,
+      "median": 38369.755,
+      "std": 13105.1824,
+      "q1": 29895.1125,
+      "q3": 46698.2,
+      "iqr": 16803.0875
+    },
+    "latency_ms": {
+      "mean": 0.0936,
+      "median": 0.068,
+      "std": 0.134,
+      "q1": 0.056,
+      "q3": 0.084,
+      "iqr": 0.028
+    },
+    "packet_loss_percent": {
+      "mean": 0.003,
+      "median": 0.0,
+      "std": 0.0247,
+      "q1": 0.0,
+      "q3": 0.0,
+      "iqr": 0.0
+    },
+    "jitter_ms": {
+      "mean": 0.0753,
+      "median": 0.01,
+      "std": 0.3529,
+      "q1": 0.007,
+      "q3": 0.017,
+      "iqr": 0.01
+    },
+    "flow_setup_time_ms": {
+      "mean": 17.8298,
+      "median": 17.585,
+      "std": 4.0205,
+      "q1": 14.69,
+      "q3": 20.7775,
+      "iqr": 6.0875
+    },
+    "cpu_usage_percent": {
+      "mean": 22.2161,
+      "median": 15.355,
+      "std": 27.5462,
+      "q1": 1.31,
+      "q3": 32.66,
+      "iqr": 31.35
+    },
+    "memory_usage_mb": {
+      "mean": 439.3376,
+      "median": 403.42,
+      "std": 355.8272,
+      "q1": 35.2625,
+      "q3": 762.3175,
+      "iqr": 727.055
+    }
+  },
+  "label_distribution_count": {
+    "floodlight": {
+      "linear": 138,
+      "mesh": 0,
+      "ring": 12,
+      "star": 129,
+      "tree": 51
+    },
+    "onos": {
+      "linear": 81,
+      "mesh": 45,
+      "ring": 132,
+      "star": 9,
+      "tree": 57
+    },
+    "ryu": {
+      "linear": 111,
+      "mesh": 9,
+      "ring": 48,
+      "star": 192,
+      "tree": 36
+    }
+  },
+  "label_distribution_percent": {
+    "floodlight": {
+      "linear": 41.82,
+      "mesh": 0.0,
+      "ring": 6.25,
+      "star": 39.09,
+      "tree": 35.42
+    },
+    "onos": {
+      "linear": 24.55,
+      "mesh": 83.33,
+      "ring": 68.75,
+      "star": 2.73,
+      "tree": 39.58
+    },
+    "ryu": {
+      "linear": 33.64,
+      "mesh": 16.67,
+      "ring": 25.0,
+      "star": 58.18,
+      "tree": 25.0
+    }
+  },
+  "boxplot_files": [
+    "/content/results/plots/boxplot_throughput_mbps_DatasetA.png",
+    "/content/results/plots/boxplot_latency_ms_DatasetA.png",
+    "/content/results/plots/boxplot_packet_loss_percent_DatasetA.png",
+    "/content/results/plots/boxplot_jitter_ms_DatasetA.png",
+    "/content/results/plots/boxplot_flow_setup_time_ms_DatasetA.png",
+    "/content/results/plots/boxplot_cpu_usage_percent_DatasetA.png",
+    "/content/results/plots/boxplot_memory_usage_mb_DatasetA.png"
+  ],
+  "paired_ttest": {
+    "n_pairs": 50,
+    "mean_accuracy_dataset_a": 0.5867,
+    "std_accuracy_dataset_a": 0.0271,
+    "mean_accuracy_ground_truth": 0.8861,
+    "std_accuracy_ground_truth": 0.0272,
+    "t_statistic": 56.0573,
+    "p_value": 4.169201119600593e-46,
+    "alpha": 0.05,
+    "significant": true,
+    "interpretation": "Perbedaan akurasi signifikan secara statistik (bias struktural terdeteksi)"
+  },
+  "chi_square": {
+    "dataset_a": {
+      "dataset": "Dataset A",
+      "chi2_statistic": 362.7551,
+      "degrees_of_freedom": 8,
+      "p_value": 1.7121492322650926e-73,
+      "alpha": 0.05,
+      "significant_association": true,
+      "interpretation": "Ada asosiasi signifikan antara label dan topologi (indikasi bias struktural)"
+    },
+    "ground_truth": {
+      "dataset": "Ground Truth",
+      "chi2_statistic": 559.6475,
+      "degrees_of_freedom": 8,
+      "p_value": 1.0996797333263382e-115,
+      "alpha": 0.05,
+      "significant_association": true,
+      "interpretation": "Ada asosiasi signifikan antara label dan topologi (indikasi bias struktural)"
+    }
+  },
+  "shap_analysis": {
+    "dataset_a": {
+      "dataset": "DatasetA",
+      "feature_importance_mean_abs_shap": {
+        "throughput_mbps": 0.066686,
+        "latency_ms": 0.047044,
+        "packet_loss_percent": 0.003328,
+        "jitter_ms": 0.033035,
+        "flow_setup_time_ms": 0.02583,
+        "cpu_usage_percent": 0.028408,
+        "memory_usage_mb": 0.031281,
+        "nodes": 0.040834,
+        "topo_linear": 0.024563,
+        "topo_mesh": 0.012983,
+        "topo_ring": 0.043797,
+        "topo_star": 0.04575,
+        "topo_tree": 0.006341
+      },
+      "topology_related_features": [
+        "topo_linear",
+        "topo_mesh",
+        "topo_ring",
+        "topo_star",
+        "topo_tree",
+        "nodes"
+      ],
+      "topology_importance_sum": 0.174268,
+      "total_importance_sum": 0.40988,
+      "topology_dominance_ratio": 0.4252,
+      "plot_path": "/content/results/plots/shap_summary_DatasetA.png"
+    },
+    "ground_truth": {
+      "dataset": "GroundTruth",
+      "feature_importance_mean_abs_shap": {
+        "throughput_mbps": 0.08167,
+        "latency_ms": 0.068852,
+        "packet_loss_percent": 0.005031,
+        "jitter_ms": 0.02876,
+        "flow_setup_time_ms": 0.028847,
+        "cpu_usage_percent": 0.036193,
+        "memory_usage_mb": 0.045646,
+        "nodes": 0.071014,
+        "topo_linear": 0.022757,
+        "topo_mesh": 0.013251,
+        "topo_ring": 0.074859,
+        "topo_star": 0.030769,
+        "topo_tree": 0.005688
+      },
+      "topology_related_features": [
+        "topo_linear",
+        "topo_mesh",
+        "topo_ring",
+        "topo_star",
+        "topo_tree",
+        "nodes"
+      ],
+      "topology_importance_sum": 0.218338,
+      "total_importance_sum": 0.513337,
+      "topology_dominance_ratio": 0.4253,
+      "plot_path": "/content/results/plots/shap_summary_GroundTruth.png"
+    }
+  },
+  "noise_transition_matrix": {
+    "n_samples_dataset_a": 1050,
+    "n_samples_matched_in_ground_truth": 6120,
+    "n_samples_removed_by_confident_learning": -5070,
+    "n_labels_changed_by_iflipper": 3618,
+    "n_labels_unchanged": 2502,
+    "transition_matrix": {
+      "floodlight": {
+        "floodlight": 621,
+        "onos": 570,
+        "ryu": 421
+      },
+      "onos": {
+        "floodlight": 563,
+        "onos": 649,
+        "ryu": 514
+      },
+      "ryu": {
+        "floodlight": 792,
+        "onos": 758,
+        "ryu": 1232
+      }
+    }
+  },
+  "bootstrap_ci": {
+    "dataset_a": {
+      "dataset": "Dataset A",
+      "bootstrap_ci": {
+        "accuracy": {
+          "mean": 0.5712,
+          "std": 0.0332,
+          "ci_lower_2.5%": 0.5094,
+          "ci_upper_97.5%": 0.6381,
+          "n_bootstrap": 1000
+        },
+        "precision": {
+          "mean": 0.5814,
+          "std": 0.0341,
+          "ci_lower_2.5%": 0.5159,
+          "ci_upper_97.5%": 0.6472,
+          "n_bootstrap": 1000
+        },
+        "recall": {
+          "mean": 0.5712,
+          "std": 0.0332,
+          "ci_lower_2.5%": 0.5094,
+          "ci_upper_97.5%": 0.6381,
+          "n_bootstrap": 1000
+        },
+        "f1": {
+          "mean": 0.5669,
+          "std": 0.034,
+          "ci_lower_2.5%": 0.4998,
+          "ci_upper_97.5%": 0.6332,
+          "n_bootstrap": 1000
+        },
+        "spd": {
+          "mean": -0.4216,
+          "std": 0.0429,
+          "ci_lower_2.5%": -0.5063,
+          "ci_upper_97.5%": -0.3349,
+          "n_bootstrap": 1000
+        },
+        "di": {
+          "mean": 1.7644,
+          "std": 0.1284,
+          "ci_lower_2.5%": 1.5409,
+          "ci_upper_97.5%": 2.0463,
+          "n_bootstrap": 1000
+        },
+        "eod": {
+          "mean": -0.3115,
+          "std": 0.0499,
+          "ci_lower_2.5%": -0.4068,
+          "ci_upper_97.5%": -0.2131,
+          "n_bootstrap": 1000
+        },
+        "individual_fairness": {
+          "mean": 0.9449,
+          "std": 0.0328,
+          "ci_lower_2.5%": 0.8762,
+          "ci_upper_97.5%": 0.9952,
+          "n_bootstrap": 1000
+        }
+      }
+    },
+    "ground_truth": {
+      "dataset": "Ground Truth",
+      "bootstrap_ci": {
+        "accuracy": {
+          "mean": 0.8917,
+          "std": 0.0242,
+          "ci_lower_2.5%": 0.8443,
+          "ci_upper_97.5%": 0.9341,
+          "n_bootstrap": 1000
+        },
+        "precision": {
+          "mean": 0.9027,
+          "std": 0.0205,
+          "ci_lower_2.5%": 0.8605,
+          "ci_upper_97.5%": 0.9398,
+          "n_bootstrap": 1000
+        },
+        "recall": {
+          "mean": 0.8917,
+          "std": 0.0242,
+          "ci_lower_2.5%": 0.8443,
+          "ci_upper_97.5%": 0.9341,
+          "n_bootstrap": 1000
+        },
+        "f1": {
+          "mean": 0.8898,
+          "std": 0.0249,
+          "ci_lower_2.5%": 0.8408,
+          "ci_upper_97.5%": 0.9338,
+          "n_bootstrap": 1000
+        },
+        "spd": {
+          "mean": -0.2257,
+          "std": 0.0496,
+          "ci_lower_2.5%": -0.3197,
+          "ci_upper_97.5%": -0.1301,
+          "n_bootstrap": 1000
+        },
+        "di": {
+          "mean": 1.3122,
+          "std": 0.0829,
+          "ci_lower_2.5%": 1.1646,
+          "ci_upper_97.5%": 1.4797,
+          "n_bootstrap": 1000
+        },
+        "eod": {
+          "mean": -0.0123,
+          "std": 0.0127,
+          "ci_lower_2.5%": -0.0417,
+          "ci_upper_97.5%": 0.0,
+          "n_bootstrap": 1000
+        },
+        "individual_fairness": {
+          "mean": 0.94,
+          "std": 0.0201,
+          "ci_lower_2.5%": 0.8982,
+          "ci_upper_97.5%": 0.976,
+          "n_bootstrap": 1000
+        }
+      }
+    }
+  }
+}

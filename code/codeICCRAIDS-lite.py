@@ -41,10 +41,10 @@ ITERATIONS = 1
 #    for n in range(4, 15) for b in [10, 30, 60, 150, 300]
 #] #batch 3 -4 165
 #
-SCENARIOS = [
-    {'topo': 'tree', 'depth': d, 'fanout': f, 'bw': f'{bws}M', 'name': f'Tree_D{d}_F{f}_bw{bws}M'}
-    for d in [2, 3] for f in [2, 3, 4] for bws in [10, 50, 100, 200]
-]
+#SCENARIOS = [
+#    {'topo': 'tree', 'depth': d, 'fanout': f, 'bw': f'{bws}M', 'name': f'Tree_D{d}_F{f}_bw{bws}M'}
+#    for d in [2, 3] for f in [2, 3, 4] for bws in [10, 50, 100, 200]
+#]
 # Tambahkan variasi BW manual untuk mencukupi kuota batch
 #
 #SCENARIOS = [
@@ -52,10 +52,10 @@ SCENARIOS = [
 #    for n in range(4, 12) for b in [10, 50, 100, 500]
 #]
 #
-#SCENARIOS = [
-#    {'topo': 'mesh', 'nodes': n, 'bw': f'{b}M', 'name': f'Mesh_{n}n_{b}M'}
-#    for n in [4, 5, 6] for b in [10, 100, 1000]
-#]
+SCENARIOS = [
+    {'topo': 'mesh', 'nodes': n, 'bw': f'{b}M', 'name': f'Mesh_{n}n_{b}M'}
+    for n in [4, 5, 6] for b in [10, 100, 1000]
+]
 #
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(os.path.dirname(BASE_DIR), 'data')
@@ -63,14 +63,14 @@ LOG_DIR = os.path.join(os.path.dirname(BASE_DIR), 'logs')
 os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(LOG_DIR, exist_ok=True)
 
-LOG_FILE = os.path.join(LOG_DIR, 'generation_ahp_batch6.log')
+LOG_FILE = os.path.join(LOG_DIR, 'generation_ahp_batch10.log')
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()]
 )
 
-CSV_FILE = os.path.join(DATA_DIR, 'sdn_dataset_ahp_batch6.csv')
+CSV_FILE = os.path.join(DATA_DIR, 'sdn_dataset_ahp_batch10.csv')
 CSV_HEADER = [
     'sample_id', 'iteration', 'timestamp', 'controller_name', 'scenario_name',
     'nodes', 'topology_type', 'bandwidth_demand', 'throughput_mbps', 'latency_ms',

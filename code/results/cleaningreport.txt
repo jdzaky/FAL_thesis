@@ -1,0 +1,65 @@
+dzaky@dzaky-GACOR:/media/dzaky/Data/TESISASLI/code$ sudo sdn-env/bin/python3 cleaning3.py 
+2026-07-21 14:03:46,745 - INFO - ============================================================
+2026-07-21 14:03:46,745 - INFO - PIPELINE: CONFIDENT LEARNING + IFLIPPER (REVISED)
+2026-07-21 14:03:46,745 - INFO - ============================================================
+2026-07-21 14:03:46,751 - INFO - Loaded 1050 samples from final_sdn_dataset_ahp.csv
+2026-07-21 14:03:46,752 - INFO - Original dataset: 1050 samples
+2026-07-21 14:03:46,752 - INFO - 
+============================================================
+2026-07-21 14:03:46,752 - INFO - Stage 1: CONFIDENT LEARNING (REVISED)
+2026-07-21 14:03:46,752 - INFO - ============================================================
+2026-07-21 14:03:46,752 - INFO - ============================================================
+2026-07-21 14:03:46,752 - INFO - FAIR CONFIDENT LEARNING (REVISED - Iterative Progressive)
+2026-07-21 14:03:46,752 - INFO - ============================================================
+2026-07-21 14:03:46,758 - INFO - Total samples: 1050
+2026-07-21 14:03:46,758 - INFO - Privileged (B): 804 | Disadvantaged (A): 246
+2026-07-21 14:03:46,758 - INFO - Estimated clean: 630
+2026-07-21 14:03:46,783 - INFO - Epoch   1/50 | New noisy:   69 | Total noisy:   69 | Clean remaining:  981
+2026-07-21 14:03:46,806 - INFO - Epoch   2/50 | New noisy:   38 | Total noisy:  107 | Clean remaining:  943
+2026-07-21 14:03:46,831 - INFO - Epoch   3/50 | New noisy:   44 | Total noisy:  151 | Clean remaining:  899
+2026-07-21 14:03:46,860 - INFO - Epoch   4/50 | New noisy:   27 | Total noisy:  178 | Clean remaining:  872
+2026-07-21 14:03:46,888 - INFO - Epoch   5/50 | New noisy:   24 | Total noisy:  202 | Clean remaining:  848
+2026-07-21 14:03:46,944 - INFO - Converged at epoch 7
+2026-07-21 14:03:46,946 - INFO - 
+Confident Learning detected 217 noisy samples (20.7%)
+2026-07-21 14:03:46,947 - INFO - Clean samples remaining: 833
+2026-07-21 14:03:46,950 - INFO - Removed 217 noisy samples, kept 833
+2026-07-21 14:03:46,985 - INFO - Clean dataset saved: /media/dzaky/Data/TESISASLI/code/data/DATASET_CLEAN.csv
+2026-07-21 14:03:46,989 - INFO - 
+============================================================
+2026-07-21 14:03:46,989 - INFO - Stage 2: IFLIPPER (REVISED Multi-Class)
+2026-07-21 14:03:46,989 - INFO - ============================================================
+2026-07-21 14:03:46,989 - INFO - ============================================================
+2026-07-21 14:03:46,989 - INFO - IFLIPPER: Individual Fairness (REVISED - Multi-Class Greedy)
+2026-07-21 14:03:46,989 - INFO - ============================================================
+2026-07-21 14:03:46,995 - INFO - Classes: ['floodlight' 'onos' 'ryu'] (n=3)
+2026-07-21 14:03:46,995 - INFO - Generating similarity matrix for 833 samples...
+2026-07-21 14:03:47,168 - INFO - iFlipper Multi-Class: Initial error=1118.00, edges=2792, budget=111.80 (10%)
+2026-07-21 14:03:47,725 - INFO -   Flip 1: idx=333 2->0 (reduction=9.000), error=1109.00
+2026-07-21 14:03:48,277 - INFO -   Flip 2: idx=33 0->2 (reduction=8.000), error=1101.00
+2026-07-21 14:03:48,815 - INFO -   Flip 3: idx=66 2->0 (reduction=8.000), error=1093.00
+2026-07-21 14:03:49,380 - INFO -   Flip 4: idx=216 0->2 (reduction=8.000), error=1085.00
+2026-07-21 14:03:49,945 - INFO -   Flip 5: idx=555 0->2 (reduction=8.000), error=1077.00
+2026-07-21 14:03:50,488 - INFO -   Flip 6: idx=107 0->2 (reduction=7.000), error=1070.00
+2026-07-21 14:03:51,036 - INFO -   Flip 7: idx=281 0->2 (reduction=9.000), error=1061.00
+2026-07-21 14:03:51,602 - INFO -   Flip 8: idx=250 0->2 (reduction=7.000), error=1054.00
+2026-07-21 14:03:52,170 - INFO -   Flip 9: idx=475 0->2 (reduction=7.000), error=1047.00
+2026-07-21 14:03:52,720 - INFO -   Flip 10: idx=530 0->2 (reduction=7.000), error=1040.00
+2026-07-21 14:04:11,060 - INFO -   Flip 50: idx=258 0->2 (reduction=5.000), error=807.00
+2026-07-21 14:04:34,164 - INFO -   Flip 100: idx=701 2->1 (reduction=4.000), error=580.00
+2026-07-21 14:04:57,374 - INFO -   Flip 150: idx=19 0->2 (reduction=2.000), error=406.00
+2026-07-21 14:05:21,071 - INFO -   Flip 200: idx=371 0->2 (reduction=3.000), error=287.00
+2026-07-21 14:05:37,490 - INFO - No positive reduction found at iteration 235
+2026-07-21 14:05:37,541 - INFO - iFlipper: 234 labels flipped, error 1118.00->224.00
+2026-07-21 14:05:37,542 - INFO - iFlipper: 234 labels modified for fairness
+2026-07-21 14:05:37,555 - INFO - Fair dataset saved: /media/dzaky/Data/TESISASLI/code/data/GROUND_TRUTH.csv
+2026-07-21 14:05:37,563 - INFO - 
+Results saved: /media/dzaky/Data/TESISASLI/code/results/pipeline_results.json
+2026-07-21 14:05:37,563 - INFO - 
+============================================================
+2026-07-21 14:05:37,563 - INFO - PIPELINE SUMMARY
+2026-07-21 14:05:37,563 - INFO - ============================================================
+2026-07-21 14:05:37,563 - INFO - Original (AHP): 1050
+2026-07-21 14:05:37,563 - INFO - After CL:       833
+2026-07-21 14:05:37,563 - INFO - After iFlipper: 833
+
