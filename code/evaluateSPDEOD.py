@@ -122,97 +122,37 @@ def load_dataset(filepath):
 # sesuai definisi tesis sendiri ("kondisi adil...secara simultan").
 
 
-def calculate_individual_fairness(X_scaled, y_proba, k=5, L=1.0):
+def calculate_individual_fairness(y_pred, X_scaled, k=5):
     """
-    IF (Eq. 15 - kondisi Lipschitz):
-        D(f(x_i), f(x_j)) <= L * D'(x_i, x_j)
-    - f(x)       = distribusi probabilitas prediksi model (predict_proba)
-    - D(.,.)     = jarak Euclidean antar distribusi probabilitas f(x_i), f(x_j)
-    - D'(.,.)    = jarak Euclidean antar fitur x_i, x_j (ruang fitur yang
-                   sudah dinormalisasi/scaled)
-    - L          = konstanta Lipschitz pembatas toleransi perubahan prediksi
-
-    REVISI dari versi sebelumnya: implementasi lama hanya memeriksa
-    kesamaan kelas favorable (biner, tanpa L eksplisit) -- BUKAN kondisi
-    Lipschitz. Versi ini langsung mengukur jarak pada ruang probabilitas
-    f(x), sesuai definisi Eq. (15).
-
-    ASUMSI operasional (PERLU DIVALIDASI/DIDOKUMENTASIKAN DI BAB 3):
-    1. "Sampel serupa" dioperasionalkan sebagai k-tetangga terdekat (k=5)
-       di ruang fitur -- bukan seluruh O(n^2) pasangan -- supaya definisi
-       "serupa" konsisten dengan similarity graph k-NN (k=5) yang sudah
-       dipakai di iFlipper (cleaning3.py), bukan pilihan independen baru.
-    2. D dan D' berada di satuan/skala yang berbeda (probabilitas vs ruang
-       fitur ternormalisasi), sehingga sebelum dibandingkan keduanya
-       dinormalisasi (dibagi nilai maksimum masing-masing di antara semua
-       pasangan tetangga yang dievaluasi). Setelah normalisasi ini, L=1
-       dipakai sebagai konstanta Lipschitz baku (default). L=1 berarti
-       "perubahan probabilitas prediksi (relatif) tidak boleh lebih cepat
-       dari perubahan jarak fitur (relatif)" -- ini pilihan wajar tapi
-       tetap sebuah ASUMSI, bukan nilai yang diturunkan dari data.
-    3. IF dilaporkan sebagai PROPORSI pasangan tetangga yang memenuhi
-       syarat Lipschitz (bukan nilai L itu sendiri), agar sesuai skala
-       target Tabel 3.6 (IF > 0,9). Konstanta Lipschitz empiris (rasio
-       maksimum D_norm/D'_norm yang teramati di data) tetap dilaporkan
-       terpisah (`empirical_L_max_ratio`) untuk transparansi.
-
-    Returns:
-        if_score (float): proporsi pasangan tetangga yang memenuhi Eq. (15), dalam [0, 1]
-        details (dict): n_pairs, L_used, empirical_L_max_ratio, violation_rate
+    IF (Eq. 4 - Consistency Score / iFlipper):
+        Skor Konsistensi = 1 - sum(|h(xi) - h(xj)| * Wij) / sum(Wij)
+    - h(x) = prediksi label model (y_pred, bukan predict_proba)
+    - Wij   = bobot kesamaan KNN (1 jika tetangga, 0 jika tidak), k=5
     """
-    n = len(X_scaled)
-    if n < 2:
-        return 1.0, {'n_pairs': 0, 'L_used': L, 'empirical_L_max_ratio': 0.0, 'violation_rate': 0.0}
-
-    k_eff = min(k + 1, n)
-    nn = NearestNeighbors(n_neighbors=k_eff, algorithm='ball_tree')
+    n = len(y_pred)
+    nn = NearestNeighbors(n_neighbors=min(k+1, n), algorithm='ball_tree')
     nn.fit(X_scaled)
     _, indices = nn.kneighbors(X_scaled)
 
-    pairs = set()
+    weighted_mismatch = 0.0
+    total_weight = 0.0
+
     for i in range(n):
-        for j in indices[i, 1:]:
-            pairs.add((min(i, int(j)), max(i, int(j))))
+        for j_idx in range(1, min(k+1, n)):
+            j = indices[i, j_idx]
+            w_ij = 1.0
+            weighted_mismatch += abs(int(y_pred[i]) - int(y_pred[j])) * w_ij
+            total_weight += w_ij
 
-    if not pairs:
-        return 1.0, {'n_pairs': 0, 'L_used': L, 'empirical_L_max_ratio': 0.0, 'violation_rate': 0.0}
+    if total_weight == 0:
+        return 1.0, {'n_pairs': 0}
 
-    pair_idx = np.array(list(pairs))
-    i_idx, j_idx = pair_idx[:, 0], pair_idx[:, 1]
-
-    feature_dist = np.linalg.norm(X_scaled[i_idx] - X_scaled[j_idx], axis=1)
-    proba_dist = np.linalg.norm(y_proba[i_idx] - y_proba[j_idx], axis=1)
-
-    max_feat = feature_dist.max()
-    max_proba = proba_dist.max()
-
-    if max_feat == 0 or max_proba == 0:
-        # Tidak ada variasi jarak untuk dievaluasi (semua tetangga identik
-        # di salah satu ruang) -> dianggap konsisten sepenuhnya.
-        return 1.0, {'n_pairs': len(pairs), 'L_used': L, 'empirical_L_max_ratio': 0.0, 'violation_rate': 0.0}
-
-    feature_dist_norm = feature_dist / max_feat
-    proba_dist_norm = proba_dist / max_proba
-
-    violation = proba_dist_norm > (L * feature_dist_norm)
-    if_score = 1.0 - violation.mean()
-
-    safe_feat_norm = np.where(feature_dist_norm == 0, 1e-12, feature_dist_norm)
-    empirical_L = float(np.max(proba_dist_norm / safe_feat_norm))
-
-    details = {
-        'n_pairs': int(len(pairs)),
-        'L_used': L,
-        'empirical_L_max_ratio': round(empirical_L, 4),
-        'violation_rate': round(float(violation.mean()), 4),
-    }
-
-    return float(if_score), details
-
+    if_score = 1.0 - (weighted_mismatch / total_weight)
+    return float(if_score), {'n_pairs': int(total_weight)}
 
 def calculate_fairness_metrics(df_test, sensitive_col, y_true, y_pred,
                                 class_names, X_test_scaled, y_proba,
-                                lipschitz_L=1.0, di_epsilon=0):
+                                di_epsilon=0):
     """
     REVISI (Opsi B - one-vs-rest per kelas): SPD/DI/EOD dihitung untuk
     SETIAP kelas (favorable = "diprediksi sebagai kelas tsb" vs bukan),
@@ -314,7 +254,7 @@ def calculate_fairness_metrics(df_test, sensitive_col, y_true, y_pred,
     # IF (Eq. 15): dihitung SEKALI dari seluruh vektor probabilitas 3 kelas
     # (bukan per kelas) -- f(x) sudah mencakup semua kelas sekaligus.
     individual_fairness, if_details = calculate_individual_fairness(
-        X_test_scaled, y_proba, k=5, L=lipschitz_L
+        y_pred, X_test_scaled, k=5
     )
 
     spd_fair = bool(spd_agg < 0.1)
@@ -370,8 +310,7 @@ def calculate_fairness_metrics(df_test, sensitive_col, y_true, y_pred,
     logger.info(f"  [EOD] worst-case={eod_agg:.4f} (kelas: {eod_worst_class}) | "
                 f"mean={eod_mean:.4f} | Fair: {eod_fair} [KRITERIA UTAMA]")
     logger.info(f"  [IF]  {individual_fairness:.4f} | Fair: {individual_fair} [KRITERIA UTAMA] "
-                f"(L={if_details.get('L_used')}, empirical_L_max={if_details.get('empirical_L_max_ratio')}, "
-                f"violation_rate={if_details.get('violation_rate')}, n_pairs={if_details.get('n_pairs')})")
+                f"(n_pairs={if_details.get('n_pairs')})")
     for c, m in per_class.items():
         logger.info(f"    - {c}: SPD={m['spd']:.4f} DI={m['di']:.4f} EOD={m['eod']:.4f}")
     logger.info(f"  Fairness metrics achieved (4 metrik/Tabel 3.6): {fair_count}/4")
