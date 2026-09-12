@@ -1,0 +1,99 @@
+dzaky@dzaky-GACOR:/media/dzaky/Data/TESISASLI/code$ sudo sdn-env/bin/python3 FeatureImportantExtract.py 
+
+=== Feature Importance (5-fold CV, mean +/- std) — Dataset A (AHP — sebelum pipeline) ===
+Fitur                         Mean      Std   Rank
+----------------------------------------------------
+latency_ms                  0.1826   0.0105      1
+throughput_mbps             0.1772   0.0181      2
+memory_usage_mb             0.1470   0.0063      3
+cpu_usage_percent           0.1279   0.0072      4
+flow_setup_time_ms          0.1239   0.0033      5
+jitter_ms                   0.1181   0.0040      6
+nodes                       0.1143   0.0098      7 <-- PROKSI TOPOLOGI
+packet_loss_percent         0.0091   0.0008      8
+
+Rank 'nodes' per fold: [7, 5, 7, 7, 4]
+Rank 'nodes' rata-rata: 6.0 (std=1.26)
+
+=== Feature Importance (5-fold CV, mean +/- std) — Dataset B (Ground Truth — setelah pipeline) ===
+Fitur                         Mean      Std   Rank
+----------------------------------------------------
+latency_ms                  0.1991   0.0045      1
+throughput_mbps             0.1819   0.0079      2
+nodes                       0.1675   0.0136      3 <-- PROKSI TOPOLOGI
+memory_usage_mb             0.1311   0.0092      4
+cpu_usage_percent           0.1160   0.0081      5
+flow_setup_time_ms          0.1067   0.0143      6
+jitter_ms                   0.0883   0.0046      7
+packet_loss_percent         0.0095   0.0027      8
+
+Rank 'nodes' per fold: [2, 3, 3, 3, 3]
+Rank 'nodes' rata-rata: 2.8 (std=0.40)
+
+=== Perbandingan Feature Importance: Dataset A vs Dataset B ===
+Fitur                       A (mean)   B (mean)    Selisih
+------------------------------------------------------------
+throughput_mbps               0.1772     0.1819    +0.0047
+latency_ms                    0.1826     0.1991    +0.0165
+packet_loss_percent           0.0091     0.0095    +0.0004
+jitter_ms                     0.1181     0.0883    -0.0298
+cpu_usage_percent             0.1279     0.1160    -0.0119
+memory_usage_mb               0.1470     0.1311    -0.0160
+flow_setup_time_ms            0.1239     0.1067    -0.0172
+nodes                         0.1143     0.1675    +0.0532 <--
+
+Rank 'nodes' (berdasarkan mean): Dataset A = #7, Dataset B = #3
+Perubahan importance 'nodes' (mean): +46.5%
+Stabilitas rank 'nodes' per fold — Dataset A: [7, 5, 7, 7, 4]
+Stabilitas rank 'nodes' per fold — Dataset B: [2, 3, 3, 3, 3]
+
+run 2
+
+=== Feature Importance (5-fold CV, mean +/- std) — Dataset A (AHP — sebelum pipeline) ===
+Fitur                         Mean      Std   Rank
+----------------------------------------------------
+latency_ms                  0.1826   0.0105      1
+throughput_mbps             0.1772   0.0181      2
+memory_usage_mb             0.1470   0.0063      3
+cpu_usage_percent           0.1279   0.0072      4
+flow_setup_time_ms          0.1239   0.0033      5
+jitter_ms                   0.1181   0.0040      6
+nodes                       0.1143   0.0098      7 <-- PROKSI TOPOLOGI
+packet_loss_percent         0.0091   0.0008      8
+
+Rank 'nodes' per fold: [7, 5, 7, 7, 4]
+Rank 'nodes' rata-rata: 6.0 (std=1.26)
+
+=== Feature Importance (5-fold CV, mean +/- std) — Dataset B (Ground Truth — setelah pipeline) ===
+Fitur                         Mean      Std   Rank
+----------------------------------------------------
+latency_ms                  0.1991   0.0045      1
+throughput_mbps             0.1819   0.0079      2
+nodes                       0.1675   0.0136      3 <-- PROKSI TOPOLOGI
+memory_usage_mb             0.1311   0.0092      4
+cpu_usage_percent           0.1160   0.0081      5
+flow_setup_time_ms          0.1067   0.0143      6
+jitter_ms                   0.0883   0.0046      7
+packet_loss_percent         0.0095   0.0027      8
+
+Rank 'nodes' per fold: [2, 3, 3, 3, 3]
+Rank 'nodes' rata-rata: 2.8 (std=0.40)
+
+=== Perbandingan Feature Importance: Dataset A vs Dataset B ===
+Fitur                       A (mean)   B (mean)    Selisih
+------------------------------------------------------------
+throughput_mbps               0.1772     0.1819    +0.0047
+latency_ms                    0.1826     0.1991    +0.0165
+packet_loss_percent           0.0091     0.0095    +0.0004
+jitter_ms                     0.1181     0.0883    -0.0298
+cpu_usage_percent             0.1279     0.1160    -0.0119
+memory_usage_mb               0.1470     0.1311    -0.0160
+flow_setup_time_ms            0.1239     0.1067    -0.0172
+nodes                         0.1143     0.1675    +0.0532 <--
+
+Rank 'nodes' (berdasarkan mean): Dataset A = #7, Dataset B = #3
+Perubahan importance 'nodes' (mean): +46.5%
+Stabilitas rank 'nodes' per fold — Dataset A: [7, 5, 7, 7, 4]
+Stabilitas rank 'nodes' per fold — Dataset B: [2, 3, 3, 3, 3]
+
+

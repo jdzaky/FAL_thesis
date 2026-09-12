@@ -455,7 +455,7 @@ def compare_datasets():
     else:
         logger.warning("Dataset B not found - skipping comparison")
 
-    results_file = os.path.join(OUTPUT_DIR, 'evaluation_results_withoutepsilon.json')
+    results_file = os.path.join(OUTPUT_DIR, 'evaluation_results_real.json')
     with open(results_file, 'w') as f:
         json.dump(eval_results, f, indent=2)
     logger.info(f"\nResults saved to {results_file}")
@@ -464,7 +464,7 @@ def compare_datasets():
 
 
 def generate_summary_report():
-    results_file = os.path.join(OUTPUT_DIR, 'evaluation_results_withoutepsilon.json')
+    results_file = os.path.join(OUTPUT_DIR, 'evaluation_results_real.json')
     if not os.path.exists(results_file):
         logger.error("No evaluation results found")
         return
@@ -515,7 +515,7 @@ def generate_summary_report():
     report_text = "\n".join(report)
     print(report_text)
 
-    report_file = os.path.join(OUTPUT_DIR, 'evaluation_report_withoutepsilon.txt')
+    report_file = os.path.join(OUTPUT_DIR, 'evaluation_report_real.txt')
     with open(report_file, 'w') as f:
         f.write(report_text)
     logger.info(f"Report saved to {report_file}")
